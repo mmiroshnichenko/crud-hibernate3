@@ -1,0 +1,2 @@
+CREATE TYPE post_status AS ENUM ('ACTIVE', 'UNDER_REVIEW', 'DELETED');
+ALTER TABLE post ADD status post_status DEFAULT 'UNDER_REVIEW';
