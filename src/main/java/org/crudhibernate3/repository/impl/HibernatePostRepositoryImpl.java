@@ -5,6 +5,8 @@ import org.crudhibernate3.repository.PostRepository;
 import org.crudhibernate3.utils.HibernateUtils;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
 
 import java.util.List;
 
@@ -13,9 +15,9 @@ public class HibernatePostRepositoryImpl implements PostRepository {
     @Override
     public Post getById(Long id) {
         Session session = HibernateUtils.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        Post post = session.get(Post.class, id);
-        transaction.commit();
+        Query query = session.createQuery("FROM Post p LEFT JOIN FETCH p.labels WHERE p.id = ?1" );
+        query.setParameter(1, id);
+        Post post = (Post) query.getSingleResult();
         session.close();
         return post;
     }

@@ -5,6 +5,7 @@ import org.crudhibernate3.repository.WriterRepository;
 import org.crudhibernate3.utils.HibernateUtils;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.util.List;
 
@@ -12,9 +13,9 @@ public class HibernateWriterRepositoryImpl implements WriterRepository {
     @Override
     public Writer getById(Long id) {
         Session session = HibernateUtils.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        Writer writer = session.get(Writer.class, id);
-        transaction.commit();
+        Query query = session.createQuery("FROM Writer w LEFT JOIN FETCH w.posts WHERE w.id = ?1");
+        query.setParameter(1, id);
+        Writer writer = (Writer) query.getSingleResult();
         session.close();
         return writer;
     }
